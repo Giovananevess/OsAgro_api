@@ -3,6 +3,7 @@ const DataTypes = Sequelize.DataTypes;
 const db = require("./db");
 
 const User = require("./User");
+const imageUpload = require("../helpers/imageUpload");
 
 const Order = db.define("orders", {
   id: {
@@ -35,6 +36,10 @@ const Order = db.define("orders", {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  images: {
+    type: DataTypes.BLOB,
+    allowNull: false,
+  },
   // Define o relacionamento com User
   userId: {
     type: Sequelize.INTEGER,
@@ -46,6 +51,22 @@ const Order = db.define("orders", {
   },
 });
 
+Order.searchByName = async function (name) {
+  try {
+    const orders = await Order.findAll({
+      where: {
+        title: {
+          [Op.iLike]: `%${title}%`,
+        },
+      },
+      include: [{ model: Order, as: "order" }],
+    });
+    return orders;
+  } catch (error) {
+    console.error("Erro ao buscar pedidos por nome:", error);
+    throw error;
+  }
+};
 // Define o relacionamento entre Order e User
 Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 

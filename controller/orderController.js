@@ -12,16 +12,15 @@ module.exports = class OrderController {
         req.body;
       const images = req.files;
 
-      // Validations
       if (
         !title ||
         !description ||
         !priority ||
         !brand ||
         !daymaintenance ||
-        !machine
-        // !images ||
-        // images.length === 0
+        !machine ||
+        !images ||
+        images.length === 0
       ) {
         return res.status(422).json({
           message: "Todos os campos são obrigatórios, incluindo a imagem!",
@@ -30,11 +29,11 @@ module.exports = class OrderController {
       const token = getToken(req);
       const user = await getUserByToken(token);
 
-      // if (!user) {
-      //   return res.status(401).json({
-      //     message: "Usuário não autorizado",
-      //   });
-      // }
+      if (!user) {
+        return res.status(401).json({
+          message: "Usuário não autorizado",
+        });
+      }
 
       const order = new Order({
         title,
@@ -45,15 +44,10 @@ module.exports = class OrderController {
         daymaintenance,
         images: images.map((image) => image.filename),
         userId: user.id,
-        // user: {
-        //   id: user.id,
-        //   email: user.email,
-        // },
       });
 
       const newOrder = await order.save();
 
-      // Inclua o usuário na resposta
       newOrder.user = user;
 
       res.status(201).json({
@@ -64,6 +58,30 @@ module.exports = class OrderController {
       res.status(500).json({ message: "Erro interno", error: error.message });
     }
   }
+
+  static async searchByName(req, res) {
+    try {
+      const { name } = req.query;
+
+      if (!name) {
+        return res
+          .status(400)
+          .json({ message: "O parâmetro 'name' é obrigatório" });
+      }
+
+      const orders = await Order.findAll({
+        where: {
+          title: { [Op.like]: `%${title}%` },
+        },
+        order: [["createdAt", "DESC"]],
+      });
+
+      res.status(200).json({ orders });
+    } catch (error) {
+      res.status(500).json({ message: "Erro interno", error: error.message });
+    }
+  }
+
   // get all orders
   static async getAll(req, res) {
     try {

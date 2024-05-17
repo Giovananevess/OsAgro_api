@@ -24,5 +24,6 @@ router.patch(
 );
 router.patch("/schedule/:id", verifyToken, OrderController.schedule);
 router.patch("/conclude/:id", verifyToken, OrderController.concludeOrder);
+router.get("/search", OrderController.searchByName);
 
 module.exports = router;
