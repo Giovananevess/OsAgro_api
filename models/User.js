@@ -29,6 +29,10 @@ const User = db.define("users", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  postal_code: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   role: {
     type: DataTypes.ENUM("Administrator", "User"),
     allowNull: true,
@@ -37,20 +41,5 @@ const User = db.define("users", {
     type: DataTypes.JSON,
   },
 });
-
-// Define o modelo Order
-// const Order = db.define("orders", {});
-
-// Define a relação de chave estrangeira entre Order e User
-// Order.belongsTo(User, { foreignKey: "userId" });
-
-// Sincroniza as tabelas
-// db.sync()
-//   .then(() => {
-//     console.log("Tabelas sincronizadas com sucesso.");
-//   })
-//   .catch((error) => {
-//     console.error("Erro ao sincronizar as tabelas:", error);
-//   });
 
 module.exports = User;

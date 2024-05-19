@@ -15,6 +15,12 @@ router.patch(
   imageUpload.single("image"),
   UserController.editUser
 );
+router.patch(
+  "/edit/:id",
+  verifyToken,
+  imageUpload.single("image"),
+  UserController.editUser
+);
 router.patch("/edit/:id");
 router.post("/identify", UserController.identifyUser);
 

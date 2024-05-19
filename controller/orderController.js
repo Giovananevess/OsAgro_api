@@ -18,9 +18,9 @@ module.exports = class OrderController {
         !priority ||
         !brand ||
         !daymaintenance ||
-        !machine ||
-        !images ||
-        images.length === 0
+        !machine
+        // !images
+        // images.length === 0
       ) {
         return res.status(422).json({
           message: "Todos os campos são obrigatórios, incluindo a imagem!",
